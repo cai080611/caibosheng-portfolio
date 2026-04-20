@@ -1131,6 +1131,20 @@
         .skill-progress {
             width: var(--width);
         }
+        
+        /* 项目卡片链接 */
+        .project-card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+        
+        .project-card-link:hover .project-card {
+            transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: var(--shadow-strong), var(--glow-cyan);
+        }
     </style>
 </head>
 <body>
@@ -1388,46 +1402,55 @@
             <h2 class="section-title">项目<em>经历</em></h2>
         </div>
         <div class="projects-grid">
-            <div class="project-card reveal">
-                <div class="project-image">🎮</div>
-                <div class="project-content">
-                    <span class="project-category">游戏开发</span>
-                    <h3 class="project-title">飞机大战 (Space Shooter)</h3>
-                    <p class="project-description">
-                        基于 Pygame 的经典太空射击游戏，参考 GitHub 高星项目 
-                        <a href="https://github.com/tasdikrahman/spaceShooter" target="_blank" style="color: var(--accent-cyan); text-decoration: underline;">tasdikrahman/spaceShooter</a> 
-                        (524⭐) 进行二次开发。实现生命值系统、分数排行榜、道具掉落（护盾/连射）、碰撞检测、音效动画等核心功能。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">Python</span>
-                        <span class="tag">Pygame</span>
-                        <span class="tag">Trae</span>
-                        <span class="tag">Cursor</span>
-                        <span class="tag">GitHub</span>
-                    </div>
-                    <div style="margin-top: 1rem; display: flex; gap: 1rem; align-items: center;">
-                        <a href="https://github.com/tasdikrahman/spaceShooter" target="_blank" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
-                            🔗 查看源码
-                        </a>
-                        <span style="font-size: 0.85rem; color: var(--text-tertiary);">参考项目：524⭐</span>
-                    </div>
-                </div>
-            </div>
-            <div class="project-card reveal">
-                <div class="project-image">🧠</div>
-                <div class="project-content">
-                    <span class="project-category">个人智能体</span>
-                    <h3 class="project-title">纵横分析法</h3>
-                    <p class="project-description">
-                        搭建的个人智能体系统，融合历时 - 共时分析方法，可快速系统性研究产品、公司、概念或技术领域。提升信息搜集与分析效率。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">AI Agent</span>
-                        <span class="tag">OpenClaw</span>
-                        <span class="tag">研究方法</span>
+            <a href="project-spaceshooter.html" class="project-card-link reveal" style="text-decoration: none; color: inherit; display: block;">
+                <div class="project-card reveal">
+                    <div class="project-image">🎮</div>
+                    <div class="project-content">
+                        <span class="project-category">游戏开发</span>
+                        <h3 class="project-title">飞机大战 (Space Shooter)</h3>
+                        <p class="project-description">
+                            基于 Pygame 的经典太空射击游戏，参考 GitHub 高星项目 
+                            <span style="color: var(--accent-cyan);">tasdikrahman/spaceShooter</span> 
+                            (524⭐) 进行二次开发。实现生命值系统、分数排行榜、道具掉落（护盾/连射）、碰撞检测、音效动画等核心功能。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Pygame</span>
+                            <span class="tag">Trae</span>
+                            <span class="tag">Cursor</span>
+                            <span class="tag">GitHub</span>
+                        </div>
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem; align-items: center;">
+                            <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                                🔗 查看详情
+                            </span>
+                            <span style="font-size: 0.85rem; color: var(--text-tertiary);">参考项目：524⭐</span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
+            <a href="project-hv-analysis.html" class="project-card-link reveal" style="text-decoration: none; color: inherit; display: block;">
+                <div class="project-card reveal">
+                    <div class="project-image">🧠</div>
+                    <div class="project-content">
+                        <span class="project-category">个人智能体</span>
+                        <h3 class="project-title">纵横分析法</h3>
+                        <p class="project-description">
+                            搭建的个人智能体系统，融合历时 - 共时分析方法，可快速系统性研究产品、公司、概念或技术领域。提升信息搜集与分析效率。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">AI Agent</span>
+                            <span class="tag">OpenClaw</span>
+                            <span class="tag">研究方法</span>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <span class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                                📋 查看完整 Prompt
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
             <div class="project-card reveal">
                 <div class="project-image">📊</span>
                 <div class="project-content">
@@ -1501,25 +1524,48 @@
         <div class="books-grid">
             <div class="book-card reveal">
                 <div class="book-cover">📖</div>
-                <p class="book-title">待添加</p>
-                <p class="book-author">你读过的书</p>
+                <p class="book-title">人生得遇苏东坡</p>
+                <p class="book-author">月度阅读</p>
             </div>
             <div class="book-card reveal">
                 <div class="book-cover">📚</div>
-                <p class="book-title">待添加</p>
-                <p class="book-author">你读过的书</p>
+                <p class="book-title">苏东坡新传</p>
+                <p class="book-author">月度阅读</p>
             </div>
             <div class="book-card reveal">
-                <div class="book-cover">📕</div>
-                <p class="book-title">待添加</p>
-                <p class="book-author">你读过的书</p>
+                <div class="book-cover">📘</div>
+                <p class="book-title">非暴力沟通</p>
+                <p class="book-author">月度阅读</p>
             </div>
             <div class="book-card reveal">
                 <div class="book-cover">📗</div>
-                <p class="book-title">待添加</p>
-                <p class="book-author">你读过的书</p>
+                <p class="book-title">把时间当作朋友</p>
+                <p class="book-author">月度阅读</p>
+            </div>
+            <div class="book-card reveal">
+                <div class="book-cover">📙</div>
+                <p class="book-title">超越感觉</p>
+                <p class="book-author">月度阅读</p>
+            </div>
+            <div class="book-card reveal">
+                <div class="book-cover">📕</div>
+                <p class="book-title">人类简史</p>
+                <p class="book-author">月度阅读</p>
+            </div>
+            <div class="book-card reveal">
+                <div class="book-cover">📒</div>
+                <p class="book-title">沉默的大多数</p>
+                <p class="book-author">月度阅读</p>
+            </div>
+            <div class="book-card reveal">
+                <div class="book-cover">📔</div>
+                <p class="book-title">美的历程</p>
+                <p class="book-author">月度阅读</p>
             </div>
         </div>
+        <p class="reveal" style="text-align: center; margin-top: 2rem; color: var(--text-secondary); font-size: 1.1rem;">
+            📚 欢迎大家来交流读书心得 ~
+        </p>
     </section>
 
     <!-- 联系方式 -->

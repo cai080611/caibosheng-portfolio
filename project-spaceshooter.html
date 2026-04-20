@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞机大战 (Space Shooter) - 蔡博胜作品集</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --text-primary: #f0f0f5;
+            --text-secondary: #b0b0c0;
+            --text-tertiary: #6b6b7b;
+            --accent-gold: #d4a574;
+            --accent-cyan: #64ffda;
+            --accent-blue: #4a9eff;
+            --border-color: rgba(212, 165, 116, 0.2);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Manrope', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+        .bg-grid {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(212, 165, 116, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 165, 116, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px; pointer-events: none; z-index: 0;
+        }
+        .project-nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color); z-index: 1000; padding: 1rem 0;
+        }
+        .nav-content {
+            max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif; font-size: 1.5rem;
+            font-weight: 700; color: var(--accent-gold); text-decoration: none;
+        }
+        .nav-back {
+            display: flex; align-items: center; gap: 0.5rem;
+            color: var(--text-secondary); text-decoration: none;
+            padding: 0.5rem 1rem; border: 1px solid var(--border-color);
+            border-radius: 8px; transition: all 0.3s ease;
+        }
+        .nav-back:hover {
+            background: var(--bg-tertiary); color: var(--accent-gold);
+            border-color: var(--accent-gold);
+        }
+        .project-hero {
+            margin-top: 80px; padding: 6rem 2rem 4rem;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        }
+        .hero-content { max-width: 1200px; margin: 0 auto; }
+        .project-badge {
+            display: inline-block; background: rgba(212, 165, 116, 0.15);
+            color: var(--accent-gold); padding: 0.5rem 1rem; border-radius: 20px;
+            font-size: 0.9rem; font-weight: 600; margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+        .project-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #f5c68b 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .project-subtitle {
+            font-size: 1.2rem; color: var(--text-secondary);
+            margin-bottom: 2rem; max-width: 800px;
+        }
+        .project-meta {
+            display: flex; flex-wrap: wrap; gap: 2rem; margin-bottom: 3rem;
+        }
+        .meta-item { display: flex; align-items: center; gap: 0.75rem; }
+        .meta-icon { font-size: 1.5rem; }
+        .meta-label { font-size: 0.9rem; color: var(--text-tertiary); }
+        .meta-value { font-weight: 600; color: var(--text-primary); }
+        .project-main { max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; }
+        .section {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 2.5rem; margin-bottom: 2rem;
+        }
+        .section-title {
+            font-family: 'Cormorant Garamond', serif; font-size: 2rem;
+            color: var(--accent-gold); margin-bottom: 1.5rem;
+        }
+        .feature-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .feature-card {
+            background: var(--bg-tertiary); border-radius: 12px; padding: 1.5rem;
+            border: 1px solid var(--border-color); transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(212, 165, 116, 0.15);
+            border-color: var(--accent-gold);
+        }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .feature-title {
+            font-size: 1.2rem; font-weight: 600; color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+        .feature-desc { color: var(--text-secondary); font-size: 0.95rem; }
+        .tech-stack {
+            display: flex; flex-wrap: wrap; gap: 0.75rem;
+        }
+        .tech-tag {
+            background: rgba(100, 255, 218, 0.1); color: var(--accent-cyan);
+            padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+        }
+        .btn {
+            display: inline-block; padding: 0.75rem 2rem;
+            border-radius: 8px; text-decoration: none; font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #f5c68b 100%);
+            color: var(--bg-primary);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 165, 116, 0.4);
+        }
+        .btn-secondary {
+            background: transparent; color: var(--accent-gold);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-tertiary); border-color: var(--accent-gold);
+        }
+        .code-block {
+            background: var(--bg-tertiary); border: 1px solid var(--border-color);
+            border-radius: 8px; padding: 1.5rem; font-family: 'Consolas', monospace;
+            font-size: 0.9rem; overflow-x: auto; color: var(--text-secondary);
+        }
+        @media (max-width: 768px) {
+            .nav-content { padding: 0 1rem; }
+            .project-hero { padding: 4rem 1rem 2rem; }
+            .project-main { padding: 2rem 1rem; }
+            .section { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    
+    <!-- 导航栏 -->
+    <nav class="project-nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">蔡博胜</a>
+            <a href="index.html#projects" class="nav-back">← 返回主页</a>
+        </div>
+    </nav>
+
+    <!-- Hero 区域 -->
+    <section class="project-hero">
+        <div class="hero-content">
+            <span class="project-badge">🎮 游戏开发项目</span>
+            <h1 class="project-title">飞机大战 (Space Shooter)</h1>
+            <p class="project-subtitle">
+                基于 Pygame 的经典太空射击游戏，参考 GitHub 524⭐高星项目 
+                <a href="https://github.com/tasdikrahman/spaceShooter" target="_blank" style="color: var(--accent-cyan);">tasdikrahman/spaceShooter</a> 
+                进行二次开发
+            </p>
+            <div class="project-meta">
+                <div class="meta-item">
+                    <span class="meta-icon">📅</span>
+                    <div>
+                        <div class="meta-label">开发时间</div>
+                        <div class="meta-value">2026 年</div>
+                    </div>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">🛠️</span>
+                    <div>
+                        <div class="meta-label">技术栈</div>
+                        <div class="meta-value">Python + Pygame</div>
+                    </div>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">⭐</span>
+                    <div>
+                        <div class="meta-label">参考项目</div>
+                        <div class="meta-value">524 GitHub Stars</div>
+                    </div>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">🎯</span>
+                    <div>
+                        <div class="meta-label">开发工具</div>
+                        <div class="meta-value">Trae + Cursor</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="https://github.com/tasdikrahman/spaceShooter" target="_blank" class="btn btn-primary">
+                    🔗 查看参考源码
+                </a>
+                <a href="index.html#projects" class="btn btn-secondary">
+                    ← 返回作品集
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要内容 -->
+    <main class="project-main">
+        <!-- 项目简介 -->
+        <section class="section">
+            <h2 class="section-title">📖 项目简介</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                这是一个使用 Python 和 Pygame 开发的经典太空射击游戏项目。通过学习和参考 GitHub 上的高星开源项目 
+                <a href="https://github.com/tasdikrahman/spaceShooter" target="_blank" style="color: var(--accent-cyan);">spaceShooter</a> 
+                (524⭐)，我深入理解了游戏开发的核心概念，包括游戏循环、碰撞检测、状态管理、音效处理等。
+            </p>
+            <p style="color: var(--text-secondary);">
+                项目展示了我的<strong>自主学习能力</strong>、<strong>代码理解能力</strong>和<strong>游戏开发基础</strong>，
+                体现了在 AI 编程工具辅助下快速掌握新技术并实现完整项目的能力。
+            </p>
+        </section>
+
+        <!-- 核心功能 -->
+        <section class="section">
+            <h2 class="section-title">🎯 核心功能</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">❤️</div>
+                    <h3 class="feature-title">生命值系统</h3>
+                    <p class="feature-desc">玩家拥有 3 条生命，被敌机撞击或被子弹击中时扣除生命值，生命值耗尽则游戏结束。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">分数排行榜</h3>
+                    <p class="feature-desc">实时显示当前得分，击落敌机获得分数，支持历史最高分记录。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎁</div>
+                    <h3 class="feature-title">道具系统</h3>
+                    <p class="feature-desc">随机掉落道具：护盾（临时无敌）、连射（同时发射多颗子弹）、生命恢复等。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💥</div>
+                    <h3 class="feature-title">碰撞检测</h3>
+                    <p class="feature-desc">精确的矩形碰撞检测系统，处理玩家与敌机、子弹与敌机、道具与玩家的碰撞。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔊</div>
+                    <h3 class="feature-title">音效系统</h3>
+                    <p class="feature-desc">包含射击音效、爆炸音效、背景音乐等完整的音频体验。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3 class="feature-title">动画效果</h3>
+                    <p class="feature-desc">玩家飞机、敌机、子弹、爆炸等精灵动画，流畅的视觉效果。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 技术栈 -->
+        <section class="section">
+            <h2 class="section-title">🛠️ 技术栈</h2>
+            <div class="tech-stack">
+                <span class="tech-tag">Python 3.x</span>
+                <span class="tech-tag">Pygame</span>
+                <span class="tech-tag">SDL</span>
+                <span class="tech-tag">面向对象编程</span>
+                <span class="tech-tag">碰撞检测算法</span>
+                <span class="tech-tag">状态机</span>
+                <span class="tech-tag">Trae</span>
+                <span class="tech-tag">Cursor</span>
+                <span class="tech-tag">GitHub</span>
+            </div>
+        </section>
+
+        <!-- 运行方式 -->
+        <section class="section">
+            <h2 class="section-title">🚀 运行方式</h2>
+            <div class="code-block">
+# 1. 安装依赖
+pip install pygame
+
+# 2. 运行游戏
+python space_shooter.py
+
+# 3. 控制方式
+← → : 左右移动
+空格键 : 发射子弹
+ESC : 退出游戏
+            </div>
+        </section>
+
+        <!-- 学习收获 -->
+        <section class="section">
+            <h2 class="section-title">💡 学习收获</h2>
+            <ul style="color: var(--text-secondary); padding-left: 1.5rem; line-height: 2;">
+                <li>掌握了 Pygame 框架的核心用法和游戏开发流程</li>
+                <li>理解了游戏循环、帧率控制、事件处理等基础概念</li>
+                <li>学会了碰撞检测算法的实现和优化</li>
+                <li>提升了阅读和理解开源代码的能力</li>
+                <li>锻炼了使用 AI 编程工具辅助开发的技能</li>
+                <li>培养了独立解决问题和调试代码的能力</li>
+            </ul>
+        </section>
+
+        <!-- 参考资源 -->
+        <section class="section">
+            <h2 class="section-title">📚 参考资源</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                <strong>原项目：</strong>
+                <a href="https://github.com/tasdikrahman/spaceShooter" target="_blank" style="color: var(--accent-cyan);">
+                    tasdikrahman/spaceShooter
+                </a> (524⭐)
+            </p>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                <strong>Pygame 官方文档：</strong>
+                <a href="https://www.pygame.org/docs/" target="_blank" style="color: var(--accent-cyan);">
+                    pygame.org/docs
+                </a>
+            </p>
+            <p style="color: var(--text-secondary);">
+                <strong>SDL 库：</strong>
+                <a href="https://www.libsdl.org/" target="_blank" style="color: var(--accent-cyan);">
+                    libsdl.org
+                </a>
+            </p>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 3rem 2rem; color: var(--text-tertiary); border-top: 1px solid var(--border-color);">
+        <p>© 2026 蔡博胜 | 怀德学院 · 机械设计制造及其自动化</p>
+        <p style="margin-top: 0.5rem;">我的征途是星辰大海 🌟</p>
+    </footer>
+</body>
+</html>
