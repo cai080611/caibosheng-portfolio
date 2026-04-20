@@ -1,5 +1,26 @@
 # 个人网站版本历史
 
+## v1.1.0 - 2026-04-20 上午 (内容填充版)
+
+### 🎯 新增内容
+- ✅ 添加个人头像（Hero 区 + 关于我）
+- ✅ 添加证书照片（证书区）
+- ✅ 创建 GitHub 仓库并推送代码
+- ✅ 更新所有链接为真实地址
+
+### 📦 文件变更
+- 新增：`avatar.png`（个人头像）
+- 新增：`certificate.jpg`（证书照片）
+- 更新：`index.html`（照片位置替换）
+- 更新：GitHub 链接 → https://github.com/cai080611/caibosheng-portfolio
+
+### 🌐 GitHub 仓库
+- 仓库地址：https://github.com/cai080611/caibosheng-portfolio
+- 可见性：公开（Public）
+- 描述：蔡博胜的个人作品集网站 - AI 驱动的创新者 | Three.js + GSAP
+
+---
+
 ## v1.0.0 - 2026-04-19 23:16 (竞赛优化版)
 
 ### 🎯 核心特性
