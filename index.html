@@ -558,39 +558,45 @@
 
         .photo-frame {
             position: relative;
-            aspect-ratio: 4/5;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
             background: var(--bg-card);
-            border-radius: 8px;
+            border-radius: 50%;
             overflow: hidden;
-            border: 1px solid var(--border-light);
+            border: 3px solid var(--border-light);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
+            transition: all 0.4s var(--ease-out-expo);
         }
 
-        .photo-placeholder {
+        .photo-frame:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 60px rgba(0, 212, 255, 0.4), var(--glow-cyan);
+            transform: scale(1.02);
+        }
+
+        .profile-photo {
             width: 100%;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%);
-            color: var(--text-tertiary);
-            gap: 1rem;
-        }
-
-        .photo-placeholder-icon {
-            font-size: 5rem;
-            opacity: 0.5;
+            object-fit: cover;
+            object-position: center;
         }
 
         .photo-frame::after {
             content: '';
             position: absolute;
-            inset: 0;
+            inset: -3px;
             border: 2px solid var(--accent-cyan);
-            border-radius: 8px;
-            transform: translate(12px, 12px);
+            border-radius: 50%;
+            transform: translate(8px, 8px);
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.6;
+            transition: all 0.4s ease;
+        }
+
+        .photo-frame:hover::after {
+            transform: translate(12px, 12px);
+            opacity: 1;
         }
 
         .about-content h3 {
@@ -1386,14 +1392,24 @@
                 <div class="project-image">🎮</div>
                 <div class="project-content">
                     <span class="project-category">游戏开发</span>
-                    <h3 class="project-title">飞机大战</h3>
+                    <h3 class="project-title">飞机大战 (Space Shooter)</h3>
                     <p class="project-description">
-                        使用 AI 编程工具独立开发的经典射击游戏。实现玩家控制、敌机生成、碰撞检测、分数系统等核心功能，展现游戏逻辑设计与实现能力。
+                        基于 Pygame 的经典太空射击游戏，参考 GitHub 高星项目 
+                        <a href="https://github.com/tasdikrahman/spaceShooter" target="_blank" style="color: var(--accent-cyan); text-decoration: underline;">tasdikrahman/spaceShooter</a> 
+                        (524⭐) 进行二次开发。实现生命值系统、分数排行榜、道具掉落（护盾/连射）、碰撞检测、音效动画等核心功能。
                     </p>
                     <div class="project-tags">
                         <span class="tag">Python</span>
+                        <span class="tag">Pygame</span>
                         <span class="tag">Trae</span>
                         <span class="tag">Cursor</span>
+                        <span class="tag">GitHub</span>
+                    </div>
+                    <div style="margin-top: 1rem; display: flex; gap: 1rem; align-items: center;">
+                        <a href="https://github.com/tasdikrahman/spaceShooter" target="_blank" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                            🔗 查看源码
+                        </a>
+                        <span style="font-size: 0.85rem; color: var(--text-tertiary);">参考项目：524⭐</span>
                     </div>
                 </div>
             </div>
