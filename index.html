@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蔡博胜 | AI 驱动的创新者</title>
+    <meta name="description" content="蔡博胜个人网站 - 怀德学院机械设计制造及其自动化专业，AI 资深使用者，个人智能体开发者">
+    
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #030305;
+            --bg-card: #0d0d12;
+            --bg-card-hover: #16161e;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --text-tertiary: #6b7280;
+            --accent-cyan: #00d4ff;
+            --accent-cyan-light: #66e5ff;
+            --accent-cyan-dark: #0099cc;
+            --accent-purple: #7c3aed;
+            --border-light: rgba(255, 255, 255, 0.06);
+            --border-medium: rgba(255, 255, 255, 0.1);
+            --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --shadow-strong: 0 8px 48px rgba(0, 0, 0, 0.6);
+            --glow-cyan: 0 0 60px rgba(0, 212, 255, 0.2);
+            --gradient-cyan: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-cyan-light) 50%, var(--accent-cyan-dark) 100%);
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 动态背景 */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--border-light) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+            background-size: 80px 80px;
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+            animation: particleFloat 15s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { top: 20%; left: 80%; animation-delay: -3s; }
+        .particle:nth-child(3) { top: 60%; left: 90%; animation-delay: -6s; }
+        .particle:nth-child(4) { top: 80%; left: 30%; animation-delay: -9s; }
+        .particle:nth-child(5) { top: 40%; left: 50%; animation-delay: -12s; }
+
+        /* 自定义光标 - 星星 */
+        .cursor-star {
+            width: 40px;
+            height: 40px;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+            transition: transform 0.15s ease;
+        }
+
+        .cursor-star svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 8px var(--accent-cyan));
+            animation: starGlow 2s ease-in-out infinite;
+        }
+
+        .cursor-star.hover {
+            transform: scale(1.4) rotate(180deg);
+        }
+
+        .cursor-star.active {
+            transform: scale(0.85);
+        }
+
+        .cursor-star-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        /* 粒子拖尾 */
+        .trail {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            animation: trailFade 0.6s ease-out forwards;
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        @keyframes trailFade {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.2); }
+        }
+
+        /* 滚动进度条 */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--gradient-cyan);
+            z-index: 10000;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* 3D 文字效果 */
+        .hero-title-3d {
+            text-shadow: 
+                0 1px 0 #ccc,
+                0 2px 0 #c9c9c9,
+                0 3px 0 #bbb,
+                0 4px 0 #b9b9b9,
+                0 5px 0 #aaa,
+                0 6px 1px rgba(0,0,0,.1),
+                0 0 5px rgba(0,0,0,.1),
+                0 1px 3px rgba(0,0,0,.3),
+                0 3px 5px rgba(0,0,0,.2),
+                0 5px 10px rgba(0,0,0,.25),
+                0 10px 10px rgba(0,0,0,.2),
+                0 20px 20px rgba(0,0,0,.15);
+            transition: transform 0.1s ease;
+        }
+
+        @keyframes starGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px var(--accent-cyan)); opacity: 1; }
+            50% { filter: drop-shadow(0 0 20px var(--accent-cyan)); opacity: 0.8; }
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .cursor-star, .cursor-star-dot {
+                display: block;
+            }
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .cursor, .cursor-dot {
+                display: block;
+            }
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            25% { transform: translate(50px, -50px) scale(1.2); opacity: 0.5; }
+            50% { transform: translate(-30px, 30px) scale(0.8); opacity: 0.2; }
+            75% { transform: translate(40px, 20px) scale(1.1); opacity: 0.4; }
+        }
+
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.25rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(24px) saturate(180%);
+            background: rgba(3, 3, 5, 0.85);
+            border-bottom: 1px solid var(--border-light);
+            transition: all 0.4s var(--ease-out-expo);
+        }
+
+        nav.scrolled {
+            padding: 1rem 4rem;
+            background: rgba(3, 3, 5, 0.95);
+        }
+
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-cyan);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Hero 区域 */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 4rem 6rem;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s var(--ease-out-expo) forwards;
+        }
+
+        .hero-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 300;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s var(--ease-out-expo) 0.15s forwards;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .hero-title .highlight {
+            font-weight: 700;
+            background: var(--gradient-cyan);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-tagline {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            max-width: 700px;
+            margin: 0 auto 1rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s var(--ease-out-expo) 0.3s forwards;
+        }
+
+        .hero-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            font-style: italic;
+            color: var(--accent-cyan);
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s var(--ease-out-expo) 0.45s forwards;
+            min-height: 1.5em;
+        }
+
+        /* 打字机光标 */
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--accent-cyan);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Three.js 星空背景容器 */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* 页面加载遮罩 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100000;
+            transition: opacity 0.8s var(--ease-out-expo), visibility 0.8s;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-star {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            animation: loaderPulse 1.5s ease-in-out infinite;
+        }
+
+        .loader-star svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--accent-cyan);
+            filter: drop-shadow(0 0 20px var(--accent-cyan));
+        }
+
+        @keyframes loaderPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+        }
+
+        .loader-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            letter-spacing: 0.2em;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* 章节过渡动画 */
+        .section-enter {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .section-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s var(--ease-out-expo);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeInUp 0.8s var(--ease-out-expo) 0.6s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s var(--ease-out-expo);
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-cyan);
+            color: var(--bg-dark);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        /* 通用区块 */
+        section {
+            padding: 8rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .section-label::before,
+        .section-label::after {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--border-medium);
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 300;
+        }
+
+        .section-title em {
+            font-style: italic;
+            font-weight: 600;
+            background: var(--gradient-cyan);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 关于我 */
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .photo-frame {
+            position: relative;
+            aspect-ratio: 4/5;
+            background: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%);
+            color: var(--text-tertiary);
+            gap: 1rem;
+        }
+
+        .photo-placeholder-icon {
+            font-size: 5rem;
+            opacity: 0.5;
+        }
+
+        .photo-frame::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--accent-cyan);
+            border-radius: 8px;
+            transform: translate(12px, 12px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .about-content h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 2rem;
+        }
+
+        .about-highlights {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+        }
+
+        .highlight-icon {
+            font-size: 1.5rem;
+        }
+
+        .highlight-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* 教育背景 */
+        .education-section {
+            background: linear-gradient(180deg, transparent 0%, rgba(13, 13, 18, 0.5) 50%, transparent 100%);
+            max-width: 100%;
+        }
+
+        .education-card {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .education-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .education-header h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .education-school {
+            color: var(--accent-cyan);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .education-degree {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .education-time {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        .education-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .education-item {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .education-item-icon {
+            font-size: 1.25rem;
+            color: var(--accent-cyan);
+        }
+
+        .education-item-content h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .education-item-content p {
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
+        }
+
+        /* 技能 */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .skill-card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            transition: all 0.4s var(--ease-out-expo);
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: var(--shadow-soft), var(--glow-cyan);
+        }
+
+        .skill-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+        }
+
+        .skill-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .skill-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .skill-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .skill-item-header {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .skill-item-name {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .skill-item-percent {
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .skill-bar {
+            height: 4px;
+            background: var(--bg-card-hover);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: var(--gradient-cyan);
+            border-radius: 2px;
+            width: 0;
+            transition: width 1.2s var(--ease-out-expo);
+            position: relative;
+        }
+
+        /* 技能条粒子 */
+        .skill-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFly 0.8s ease-out forwards;
+            box-shadow: 0 0 8px var(--accent-cyan);
+        }
+
+        @keyframes particleFly {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        /* 项目 */
+        .projects-section {
+            background: linear-gradient(180deg, transparent 0%, rgba(13, 13, 18, 0.5) 50%, transparent 100%);
+            max-width: 100%;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            transition: all 0.5s var(--ease-out-expo);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: var(--shadow-strong), var(--glow-cyan);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+            pointer-events: none;
+        }
+
+        .project-card:hover::before {
+            left: 100%;
+        }
+
+        .project-image {
+            aspect-ratio: 16/9;
+            background: var(--bg-card-hover);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+        }
+
+        .project-content {
+            padding: 2rem;
+        }
+
+        .project-category {
+            display: inline-block;
+            padding: 0.375rem 0.875rem;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .project-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.375rem 0.875rem;
+            border-radius: 100px;
+            border: 1px solid var(--border-light);
+        }
+
+        /* 证书 */
+        .certificates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .certificate-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .certificate-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .certificate-icon {
+            font-size: 3rem;
+        }
+
+        .certificate-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .certificate-card:hover .certificate-image {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .certificate-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .certificate-info p {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+        }
+
+        /* 阅读 */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .book-card {
+            text-align: center;
+        }
+
+        .book-cover {
+            aspect-ratio: 2/3;
+            background: var(--bg-card);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .book-card:hover .book-cover {
+            border-color: var(--accent-cyan);
+        }
+
+        .book-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .book-author {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+        }
+
+        /* 联系方式 */
+        .contact-section {
+            text-align: center;
+        }
+
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 100px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-3px);
+        }
+
+        /* 页脚 */
+        footer {
+            padding: 3rem 4rem;
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-text {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .about {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .education-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 6rem 1.5rem 4rem;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            section {
+                padding: 5rem 1.5rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* 滚动揭示 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s var(--ease-out-expo);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .skill-progress {
+            width: var(--width);
+        }
+    </style>
+</head>
+<body>
+    <!-- 页面加载器 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-star">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+                </svg>
+            </div>
+            <div class="loader-text">LOADING</div>
+        </div>
+    </div>
+
+    <!-- Three.js 星空背景 -->
+    <div id="starfield"></div>
+
+    <!-- 滚动进度条 -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- 自定义光标 - 星星 -->
+    <div class="cursor-star" id="cursorStar">
+        <svg viewBox="0 0 24 24" fill="var(--accent-cyan)">
+            <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+        </svg>
+    </div>
+    <div class="cursor-star-dot" id="cursorStarDot"></div>
+
+    <!-- 背景效果 -->
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
+    <!-- 导航栏 -->
+    <nav id="navbar">
+        <div class="nav-logo">蔡博胜</div>
+        <ul class="nav-links">
+            <li><a href="#about">关于</a></li>
+            <li><a href="#education">教育</a></li>
+            <li><a href="#skills">技能</a></li>
+            <li><a href="#projects">项目</a></li>
+            <li><a href="#contact">联系</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero 区域 -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            开放合作中
+        </div>
+        <h1 class="hero-title">
+            蔡<span class="highlight">博胜</span>
+        </h1>
+        <p class="hero-tagline">
+            AI 驱动的创新者 | 机械设计与 AI 的跨界探索者
+        </p>
+        <p class="hero-quote">我的征途是星辰大海</p>
+        <div class="hero-cta">
+            <a href="#projects" class="btn btn-primary">查看项目</a>
+            <a href="#contact" class="btn btn-secondary">联系我</a>
+        </div>
+    </section>
+
+    <!-- 关于我 -->
+    <section id="about">
+        <div class="about">
+            <div class="photo-frame reveal">
+                <img src="avatar.png" alt="蔡博胜" class="profile-photo">
+            </div>
+            <div class="about-content reveal">
+                <h3>关于我</h3>
+                <p class="about-text">
+                    怀德学院机械设计制造及其自动化专业大一学生，对 AI 技术充满热情的早期采用者。相信 AI 不是替代，而是放大人类创造力的工具。
+                </p>
+                <p class="about-text">
+                    熟练掌握各类 AI 编程工具，能够高效地将想法转化为现实。同时保持对机械专业的热爱，探索 AI 与传统工程领域的融合可能性。
+                </p>
+                <div class="about-highlights">
+                    <div class="highlight-item">
+                        <span class="highlight-icon">🤖</span>
+                        <span class="highlight-text">AI 资深使用者</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-icon">💻</span>
+                        <span class="highlight-text">AI 编程选手</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-icon">📐</span>
+                        <span class="highlight-text">CAD 熟练</span>
+                    </div>
+                    <div class="highlight-item">
+                        <span class="highlight-icon">📊</span>
+                        <span class="highlight-text">PPT 制作者</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 教育背景 -->
+    <section class="education-section" id="education">
+        <div class="section-header reveal">
+            <p class="section-label">Education</p>
+            <h2 class="section-title">教育<em>背景</em></h2>
+        </div>
+        <div class="education-card reveal">
+            <div class="education-header">
+                <div>
+                    <h3>怀德学院</h3>
+                    <p class="education-school">机械设计制造及其自动化</p>
+                    <p class="education-degree">本科在读</p>
+                </div>
+                <div class="education-time">2025.09 - 至今</div>
+            </div>
+            <div class="education-details">
+                <div class="education-item">
+                    <span class="education-item-icon">📜</span>
+                    <div class="education-item-content">
+                        <h4>英语四级</h4>
+                        <p>大一上学期通过</p>
+                    </div>
+                </div>
+                <div class="education-item">
+                    <span class="education-item-icon">📚</span>
+                    <div class="education-item-content">
+                        <h4>核心课程</h4>
+                        <p>机械制图、工程力学、CAD 设计</p>
+                    </div>
+                </div>
+                <div class="education-item">
+                    <span class="education-item-icon">🎯</span>
+                    <div class="education-item-content">
+                        <h4>发展方向</h4>
+                        <p>AI+ 机械设计交叉领域</p>
+                    </div>
+                </div>
+                <div class="education-item">
+                    <span class="education-item-icon">📖</span>
+                    <div class="education-item-content">
+                        <h4>兴趣爱好</h4>
+                        <p>阅读、AI 技术探索</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技能 -->
+    <section id="skills">
+        <div class="section-header reveal">
+            <p class="section-label">Skills</p>
+            <h2 class="section-title">技能<em>专长</em></h2>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-card reveal">
+                <div class="skill-header">
+                    <span class="skill-icon">🤖</span>
+                    <h3 class="skill-title">AI 工具</h3>
+                </div>
+                <div class="skill-list">
+                    <div class="skill-item">
+                        <div class="skill-item-header">
+                            <span class="skill-item-name">Gemini</span>
+                            <span class="skill-item-percent">90%</span>
+                        </div>
+                        <div class="skill-bar"><div class="skill-progress" style="--width: 90%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-item-header">
+                            <span class="skill-item-name">OpenClaw</span>
+                            <span class="skill-item-percent">85%</span>
+                        </div>
+                        <div class="skill-bar"><div class="skill-progress" style="--width: 85%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-item-header">
+                            <span class="skill-item-name">个人智能体搭建</span>
+                            <span class="skill-item-percent">80%</span>
+                        </div>
+                        <div class="skill-bar"><div class="skill-progress" style="--width: 80%"></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="skill-card reveal">
+                <div class="skill-header">
+                    <span class="skill-icon">💻</span>
+                    <h3 class="skill-title">AI 编程</h3>
+                </div>
+                <div class="skill-list">
+                    <div class="skill-item">
+                        <div class="skill-item-header">
+                            <span class="skill-item-name">Trae</span>
+                            <span class="skill-item-percent">85%</span>
+                        </div>
+                        <div class="skill-bar"><div class="skill-progress" style="--width: 85%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-item-header">
+                            <span class="skill-item-name">Cursor</span>
+                            <span class="skill-item-percent">85%</span>
+                        </div>
+                        <div class="skill-bar"><div class="skill-progress" style="--width: 85%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-item-header">
+                            <span class="skill-item-name">游戏开发</span>
+                            <span class="skill-item-percent">75%</span>
+                        </div>
+                        <div class="skill-bar"><div class="skill-progress" style="--width: 75%"></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="skill-card reveal">
+                <div class="skill-header">
+                    <span class="skill-icon">🛠️</span>
+                    <h3 class="skill-title">专业技能</h3>
+                </div>
+                <div class="skill-list">
+                    <div class="skill-item">
+                        <div class="skill-item-header">
+                            <span class="skill-item-name">CAD</span>
+                            <span class="skill-item-percent">85%</span>
+                        </div>
+                        <div class="skill-bar"><div class="skill-progress" style="--width: 85%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-item-header">
+                            <span class="skill-item-name">PPT 制作</span>
+                            <span class="skill-item-percent">90%</span>
+                        </div>
+                        <div class="skill-bar"><div class="skill-progress" style="--width: 90%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-item-header">
+                            <span class="skill-item-name">英语</span>
+                            <span class="skill-item-percent">75%</span>
+                        </div>
+                        <div class="skill-bar"><div class="skill-progress" style="--width: 75%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目 -->
+    <section class="projects-section" id="projects">
+        <div class="section-header reveal">
+            <p class="section-label">Projects</p>
+            <h2 class="section-title">项目<em>经历</em></h2>
+        </div>
+        <div class="projects-grid">
+            <div class="project-card reveal">
+                <div class="project-image">🎮</div>
+                <div class="project-content">
+                    <span class="project-category">游戏开发</span>
+                    <h3 class="project-title">飞机大战</h3>
+                    <p class="project-description">
+                        使用 AI 编程工具独立开发的经典射击游戏。实现玩家控制、敌机生成、碰撞检测、分数系统等核心功能，展现游戏逻辑设计与实现能力。
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Trae</span>
+                        <span class="tag">Cursor</span>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <div class="project-image">🧠</div>
+                <div class="project-content">
+                    <span class="project-category">个人智能体</span>
+                    <h3 class="project-title">纵横分析法</h3>
+                    <p class="project-description">
+                        搭建的个人智能体系统，融合历时 - 共时分析方法，可快速系统性研究产品、公司、概念或技术领域。提升信息搜集与分析效率。
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">AI Agent</span>
+                        <span class="tag">OpenClaw</span>
+                        <span class="tag">研究方法</span>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <div class="project-image">📊</span>
+                <div class="project-content">
+                    <span class="project-category">效率工具</span>
+                    <h3 class="project-title">AI 工作流优化</h3>
+                    <p class="project-description">
+                        深度使用 Gemini、OpenClaw 等 AI 工具，构建个人学习与工作效率系统。探索 AI 在机械专业学习中的应用场景。
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">Gemini</span>
+                        <span class="tag">OpenClaw</span>
+                        <span class="tag">效率提升</span>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card reveal">
+                <div class="project-image">📐</div>
+                <div class="project-content">
+                    <span class="project-category">机械设计</span>
+                    <h3 class="project-title">CAD 设计项目</h3>
+                    <p class="project-description">
+                        熟练使用 CAD 进行机械制图与设计，完成多个课程设计项目。探索 AI 辅助设计的可能性，提升设计效率与质量。
+                    </p>
+                    <div class="project-tags">
+                        <span class="tag">CAD</span>
+                        <span class="tag">机械制图</span>
+                        <span class="tag">工程设计</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 证书 -->
+    <section id="certificates">
+        <div class="section-header reveal">
+            <p class="section-label">Certificates</p>
+            <h2 class="section-title">证书<em>荣誉</em></h2>
+        </div>
+        <div class="certificates-grid">
+            <div class="certificate-card reveal">
+                <div class="certificate-icon">📜</div>
+                <div class="certificate-info">
+                    <h3>英语四级证书</h3>
+                    <p>大一上学期通过</p>
+                </div>
+            </div>
+            <div class="certificate-card reveal">
+                <img src="certificate.jpg" alt="AI 认证证书" class="certificate-image">
+                <div class="certificate-info">
+                    <h3>AI 认证证书</h3>
+                    <p>AI 工具使用认证</p>
+                </div>
+            </div>
+            <div class="certificate-card reveal">
+                <img src="certificate.jpg" alt="AI 编程能力证书" class="certificate-image">
+                <div class="certificate-info">
+                    <h3>AI 编程能力</h3>
+                    <p>Trae/Cursor 熟练使用者</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 阅读 -->
+    <section id="books">
+        <div class="section-header reveal">
+            <p class="section-label">Reading</p>
+            <h2 class="section-title">阅读<em>书单</em></h2>
+        </div>
+        <div class="books-grid">
+            <div class="book-card reveal">
+                <div class="book-cover">📖</div>
+                <p class="book-title">待添加</p>
+                <p class="book-author">你读过的书</p>
+            </div>
+            <div class="book-card reveal">
+                <div class="book-cover">📚</div>
+                <p class="book-title">待添加</p>
+                <p class="book-author">你读过的书</p>
+            </div>
+            <div class="book-card reveal">
+                <div class="book-cover">📕</div>
+                <p class="book-title">待添加</p>
+                <p class="book-author">你读过的书</p>
+            </div>
+            <div class="book-card reveal">
+                <div class="book-cover">📗</div>
+                <p class="book-title">待添加</p>
+                <p class="book-author">你读过的书</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section class="contact-section" id="contact">
+        <div class="section-header reveal">
+            <p class="section-label">Contact</p>
+            <h2 class="section-title">联系<em>我</em></h2>
+        </div>
+        <div class="contact-content">
+            <p class="contact-text reveal">
+                有项目想合作？或者只是想聊聊 AI 与机械的跨界融合？随时联系我！
+            </p>
+            <div class="contact-links reveal">
+                <a href="mailto:2777383275@qq.com" class="contact-link">
+                    📧 2777383275@qq.com
+                </a>
+                <a href="https://github.com/caibosheng" class="contact-link" target="_blank">
+                    💻 GitHub
+                </a>
+                <a href="https://wx.qq.com" class="contact-link">
+                    💬 微信：cbs15630718598
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <p class="footer-text">© 2026 蔡博胜。我的征途是星辰大海 🌟</p>
+    </footer>
+
+    <script>
+        // ========== Three.js 星空背景 ==========
+        function initStarfield() {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.getElementById('starfield').appendChild(renderer.domElement);
+
+            // 创建星星
+            const starsGeometry = new THREE.BufferGeometry();
+            const starCount = 3000;
+            const positions = new Float32Array(starCount * 3);
+            const colors = new Float32Array(starCount * 3);
+
+            for (let i = 0; i < starCount * 3; i += 3) {
+                // 随机分布
+                positions[i] = (Math.random() - 0.5) * 2000;
+                positions[i + 1] = (Math.random() - 0.5) * 2000;
+                positions[i + 2] = (Math.random() - 0.5) * 2000;
+
+                // 青色到白色渐变
+                const colorChoice = Math.random();
+                if (colorChoice > 0.8) {
+                    // 青色星星 (20%)
+                    colors[i] = 0;
+                    colors[i + 1] = 0.83;
+                    colors[i + 2] = 1;
+                } else if (colorChoice > 0.5) {
+                    // 浅蓝色星星 (30%)
+                    colors[i] = 0.4;
+                    colors[i + 1] = 0.9;
+                    colors[i + 2] = 1;
+                } else {
+                    // 白色星星 (50%)
+                    colors[i] = 1;
+                    colors[i + 1] = 1;
+                    colors[i + 2] = 1;
+                }
+            }
+
+            starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            starsGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            // 星星材质
+            const starsMaterial = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                sizeAttenuation: true
+            });
+
+            const starField = new THREE.Points(starsGeometry, starsMaterial);
+            scene.add(starField);
+
+            camera.position.z = 500;
+
+            // 鼠标交互
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - window.innerWidth / 2) * 0.5;
+                mouseY = (e.clientY - window.innerHeight / 2) * 0.5;
+            });
+
+            // 动画循环
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // 缓慢旋转
+                starField.rotation.x += 0.0003;
+                starField.rotation.y += 0.0005;
+
+                // 鼠标视差
+                starField.rotation.x += (mouseY * 0.0001 - starField.rotation.x) * 0.05;
+                starField.rotation.y += (mouseX * 0.0001 - starField.rotation.y) * 0.05;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            // 窗口大小调整
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // ========== GSAP 页面加载动画 ==========
+        function initPageLoader() {
+            const loader = document.getElementById('pageLoader');
+            
+            // 页面加载完成后隐藏
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                    
+                    // 移除 DOM
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        
+                        // 启动 GSAP 章节动画
+                        initGSAPAnimations();
+                    }, 800);
+                }, 1500); // 最少显示 1.5 秒
+            });
+        }
+
+        // ========== GSAP 章节滚动动画 ==========
+        function initGSAPAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Hero 内容阶梯动画
+            gsap.from('.hero-title', {
+                duration: 1.2,
+                opacity: 0,
+                y: 60,
+                rotationX: 15,
+                ease: 'power4.out',
+                delay: 0.2
+            });
+
+            gsap.from('.hero-subtitle', {
+                duration: 1,
+                opacity: 0,
+                y: 40,
+                ease: 'power4.out',
+                delay: 0.4
+            });
+
+            gsap.from('.hero-quote', {
+                duration: 1,
+                opacity: 0,
+                y: 40,
+                ease: 'power4.out',
+                delay: 0.6
+            });
+
+            gsap.from('.hero-cta', {
+                duration: 1,
+                opacity: 0,
+                y: 40,
+                ease: 'power4.out',
+                delay: 0.8
+            });
+
+            // 章节标题动画
+            gsap.utils.toArray('.section-title').forEach(title => {
+                gsap.from(title, {
+                    scrollTrigger: {
+                        trigger: title,
+                        start: 'top 80%',
+                        toggleActions: 'play none none reverse'
+                    },
+                    duration: 1,
+                    opacity: 0,
+                    y: 50,
+                    ease: 'power4.out'
+                });
+            });
+
+            // 卡片阶梯动画
+            gsap.utils.toArray('.project-card, .skill-item, .certificate-card, .book-card').forEach((card, index) => {
+                gsap.from(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    },
+                    duration: 0.8,
+                    opacity: 0,
+                    y: 60,
+                    ease: 'power3.out',
+                    delay: index * 0.1
+                });
+            });
+
+            // 联系区域动画
+            gsap.from('.contact-links', {
+                scrollTrigger: {
+                    trigger: '.contact-section',
+                    start: 'top 75%'
+                },
+                duration: 1.2,
+                opacity: 0,
+                scale: 0.9,
+                ease: 'power4.out'
+            });
+        }
+
+        // ========== 控制台彩蛋 ==========
+        console.log('%c🌟 蔡博胜的个人网站 %c| 我的征途是星辰大海', 
+            'background: linear-gradient(135deg, #00d4ff, #66e5ff); color: #030305; padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 4px;',
+            'color: #9ca3af; font-size: 12px;'
+        );
+        console.log('%c💡 发现彩蛋了！开发者模式开启 %c🚀', 
+            'color: #00d4ff; font-size: 12px;',
+            'font-size: 16px;'
+        );
+        console.log('%c📧 联系我：2777383275@qq.com %c| 💬 微信：cbs15630718598', 
+            'color: #6b7280; font-size: 11px;',
+            'color: #6b7280; font-size: 11px;'
+        );
+
+        // Konami 码彩蛋
+        const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+        let konamiIndex = 0;
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    document.body.style.animation = 'spin 0.5s ease-in-out';
+                    setTimeout(() => document.body.style.animation = '', 500);
+                    console.log('%c🎉 彩蛋触发！你发现了隐藏成就！', 'color: #fbbf24; font-size: 20px; font-weight: bold;');
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+
+        // ========== 竞赛级特效集合 ==========
+        
+        // 1. 滚动进度条
+        const scrollProgress = document.getElementById('scrollProgress');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            scrollProgress.style.width = scrollPercent + '%';
+        });
+
+        // 2. 粒子拖尾效果
+        let trailParticles = [];
+        let lastTrailTime = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastTrailTime > 30) { // 限制生成频率
+                createTrail(e.clientX, e.clientY);
+                lastTrailTime = now;
+            }
+        });
+
+        function createTrail(x, y) {
+            const trail = document.createElement('div');
+            trail.className = 'trail';
+            trail.style.left = x - 3 + 'px';
+            trail.style.top = y - 3 + 'px';
+            document.body.appendChild(trail);
+            
+            setTimeout(() => trail.remove(), 600);
+        }
+
+        // 3. 3D 标题视差效果
+        const heroTitle = document.querySelector('.hero-title');
+        document.addEventListener('mousemove', (e) => {
+            if (!heroTitle) return;
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            heroTitle.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        // 4. 打字机效果 - 口号
+        const quoteElement = document.querySelector('.hero-quote');
+        const quoteText = "我的征途是星辰大海";
+        let charIndex = 0;
+
+        function typeWriter() {
+            if (charIndex < quoteText.length) {
+                quoteElement.innerHTML = quoteText.substring(0, charIndex + 1) + '<span class="typing-cursor"></span>';
+                charIndex++;
+                setTimeout(typeWriter, 150);
+            } else {
+                // 完成后移除光标
+                setTimeout(() => {
+                    quoteElement.innerHTML = quoteText;
+                }, 2000);
+            }
+        }
+        
+        // 延迟启动打字机
+        setTimeout(typeWriter, 1500);
+
+        // 5. 技能条动态填充 + 粒子爆发（滚动到可见时）
+        const skillSections = document.querySelectorAll('.skill-progress');
+        const skillsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const progressBar = entry.target;
+                    const width = progressBar.style.getPropertyValue('--width');
+                    const rect = progressBar.getBoundingClientRect();
+                    
+                    // 重置并动画
+                    progressBar.style.width = '0';
+                    setTimeout(() => {
+                        progressBar.style.width = width;
+                        
+                        // 粒子爆发
+                        createSkillParticles(progressBar, parseInt(width));
+                    }, 100);
+                    
+                    skillsObserver.unobserve(progressBar);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        skillSections.forEach(skill => skillsObserver.observe(skill));
+
+        // 技能条粒子爆发效果
+        function createSkillParticles(progressBar, percent) {
+            const particleCount = Math.min(percent, 30); // 最多 30 个粒子
+            const rect = progressBar.getBoundingClientRect();
+            
+            for (let i = 0; i < particleCount; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'skill-particle';
+                    
+                    // 随机位置
+                    const x = Math.random() * rect.width;
+                    particle.style.left = x + 'px';
+                    particle.style.top = '0';
+                    
+                    // 随机飞行方向
+                    const tx = (Math.random() - 0.5) * 100;
+                    const ty = -50 - Math.random() * 100;
+                    particle.style.setProperty('--tx', tx + 'px');
+                    particle.style.setProperty('--ty', ty + 'px');
+                    
+                    progressBar.appendChild(particle);
+                    
+                    // 清理
+                    setTimeout(() => particle.remove(), 800);
+                }, i * 30);
+            }
+        }
+
+        // 6. 项目卡片光效跟随
+        const projectCards = document.querySelectorAll('.project-card');
+        projectCards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // ========== 初始化 ==========
+        // 启动 Three.js 星空背景
+        initStarfield();
+        
+        // 启动页面加载器
+        initPageLoader();
+
+        // ========== 原有功能 ==========
+        
+        // 自定义光标 - 星星
+        const cursorStar = document.getElementById('cursorStar');
+        const cursorStarDot = document.getElementById('cursorStarDot');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorStarDot.style.left = mouseX - 3 + 'px';
+            cursorStarDot.style.top = mouseY - 3 + 'px';
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            cursorStar.style.left = cursorX - 20 + 'px';
+            cursorStar.style.top = cursorY - 20 + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // 光标悬停效果
+        const hoverElements = document.querySelectorAll('a, button, .project-card, .skill-card, .certificate-card, .book-card, .contact-link, .nav-links a');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursorStar.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursorStar.classList.remove('hover'));
+        });
+
+        // 光标点击效果
+        document.addEventListener('mousedown', () => cursorStar.classList.add('active'));
+        document.addEventListener('mouseup', () => cursorStar.classList.remove('active'));
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // 滚动揭示动画
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 100;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', reveal);
+        reveal();
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
